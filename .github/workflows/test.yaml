@@ -1,0 +1,22 @@
+name: Cleanup
+
+on:
+  pull_request:
+    types:
+      - closed
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    name: Cleanup
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "${{ github.ref_name }}"
+          echo "${{ github.base_ref }}"
+          echo "${{ github.head_ref }}"
+          echo "${{ github.event.pull_request.base.ref }}"
+          echo "${{ github.event.pull_request.head.ref }}"
