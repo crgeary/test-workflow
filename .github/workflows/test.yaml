@@ -23,9 +23,7 @@ jobs:
     steps:
       - id: setup
         run: |
-          echo "branch-name=main" >> $GITHUB_OUTPUT
-      - run: echo "event name is:" ${{ github.event_name }}
-      - run: echo "event type is:" ${{ github.event.action }}
+          echo "branch-name=${{ github.event_name == 'workflow_dispatch' && inputs.branch-name || github.head_ref }}" >> $GITHUB_OUTPUT
   cleanup:
     needs: setup
     name: Cleanup
