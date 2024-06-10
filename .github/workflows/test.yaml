@@ -1,6 +1,11 @@
 name: Cleanup
 
 on:
+  workflow_dispatch:
+    inputs:
+      branch-name:
+        required: true
+        type: string
   pull_request:
     types:
       - closed
@@ -10,12 +15,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  setup:
+    name: setup
+    runs-on: ubuntu-latest
+    outputs:
+      branch-name: ${{ steps.setup.outputs.branch-name }}
+    steps:
+      - id: setup
+        run: |
+          echo "branch-name=main" >> $GITHUB_OUTPUT
+      - run: echo "event name is:" ${{ github.event_name }}
+      - run: echo "event type is:" ${{ github.event.action }}
   cleanup:
+    needs: setup
     name: Cleanup
     runs-on: ubuntu-latest
-    if: ${{ !contains(fromJSON('["main", "master", "develop"]'), github.event.pull_request.head.ref) }}
+    if: ${{ !contains(fromJSON('["main", "master", "develop"]'), needs.setup.outputs.branch-name) }}
     steps:
       - run: |
-          echo "${{ github.event.pull_request.head.ref }}"
-      - run: |
-          echo "Complete"
+          echo "${{ needs.setup.outputs.branch-name }}"
