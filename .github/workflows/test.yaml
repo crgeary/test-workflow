@@ -17,3 +17,5 @@ jobs:
       - if: ${{ !contains(fromJSON('["main", "master", "develop"]'), github.event.pull_request.head.ref) }}
         run: |
           echo "${{ github.event.pull_request.head.ref }}"
+      - run: |
+          echo "Complete"
